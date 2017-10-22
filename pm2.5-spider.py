@@ -9,7 +9,7 @@ class pm_spider():
     def __init__(self,city,year):
         self.city = city
         self.year = year
-        self.date = year+'-01-01'
+        self.date = year+'-10-21'
         with open(self.city+"-"+self.year+".csv", "w", newline='') as excel_file:
             data_file = csv.writer(excel_file)
             data_file.writerow(['城市','AQI指数','空气质量级别','日期'])
@@ -48,12 +48,12 @@ class pm_spider():
         print(url)
         for i in range(365):
             print("*" * 50)
-            print("正在下载" + self.city + self.year + "年第" + str(i + 1) + "天数据")
+            print("正在下载"+self.city+"第" + str(i + 1) + "天PM2.5数据")
             self.date_plus()
             content = self.get_content(url)
             data = self.get_data(content)
             self.save_data(data)
-            print(self.city + self.year + "年第" + str(i + 1) + "天数据下載完成")
+            print(self.city + "第" + str(i + 1) + "天PM2.5数据下載完成")
 
 if __name__=='__main__':
     spider = pm_spider('上海','2016')
