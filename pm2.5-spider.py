@@ -2,16 +2,10 @@ import requests
 import csv
 from bs4 import BeautifulSoup
 import datetime
-from http import cookiejar
 
 url = 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action?xmlname=1462259560614'
 
-session = requests.session()
-session.cookies = cookiejar.LWPCookieJar(filename='cookies.txt')
-try:
-        session.cookies.load(ignore_discard=True)
-except :
-        print("load cookies failed")
+
 class pm_spider():
     def __init__(self,city,year):
         self.city = city
@@ -27,9 +21,8 @@ class pm_spider():
         self.date = next_date.strftime('%Y-%m-%d')
 
     def get_content(self, url):
-        response = session.post(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36'},
+        response = requests.post(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36'},
                                 data={'CITY':self.city,'V_DATE':self.date,"E_DATE":self.date})
-        session.cookies.save()
         return response.text
 
     def get_data(self, content):
