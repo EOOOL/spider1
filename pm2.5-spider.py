@@ -4,10 +4,17 @@ import csv
 from bs4 import BeautifulSoup
 import datetime
 import gzip
-from io import StringIO
+from io import StringIO, BytesIO
+from http import cookiejar
 
 url = 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action?xmlname=1462259560614'
 
+session = requests.session()
+session.cookies = cookiejar.LWPCookieJar(filename='cookies.txt')
+try:
+        session.cookies.load(ignore_discard=True)
+except :
+        print("load cookies failed")
 class pm_spider():
     def __init__(self,city,year):
         self.city = city
@@ -23,14 +30,18 @@ class pm_spider():
         self.date = next_date.strftime('%Y-%m-%d')
 
     def get_content(self, url):
-        response = requests.post(url,data={'CITY':self.city,'V_DATE':self.date,"E_DATE":self.date,'Accept-Encoding': gzip})
-        response = gzip.GzipFile(fileobj=StringIO(response.text), mode="r").read()
+        print(2)
+        response = session.post(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36'},
+                                data={'CITY':self.city,'V_DATE':self.date,"E_DATE":self.date,'page.pageNo':1,'xmlname':1462259560614,'queryflag':'close','isdesignpatterns':'flase'})
+
+        response = gzip.GzipFile(fileobj=BytesIO(response.content), mode="rb").read()
+        session.cookies.save()
         return response
 
     def get_data(self, content):
         data_list = []
         soup = BeautifulSoup(content, 'lxml')
-        soup = soup.find_all('tr', style="background-color:rgb(255,253,215);")
+        soup = soup.find_all('tr', onmouseout="this.style.backgroundColor=''")
         for i in soup:
             temp_list = []
             soup_list = i.find_all('td')
@@ -59,5 +70,6 @@ class pm_spider():
             self.save_data(data)
             print(self.city + self.year + "年" +"第" + str(i + 1) + "天数据下載完成")
 
-spider = pm_spider('上海','2016')
-spider.start()
+if __name__=='__main__':
+    spider = pm_spider('上海','2016')
+    spider.start()
