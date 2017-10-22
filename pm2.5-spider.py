@@ -1,6 +1,6 @@
 import requests
-import csv
 from bs4 import BeautifulSoup
+import csv
 import datetime
 
 url = 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action?xmlname=1462259560614'
@@ -12,9 +12,9 @@ class pm_spider():
         self.date = year+'-10-21'
         with open(self.city+"-"+self.year+".csv", "w", newline='') as excel_file:
             data_file = csv.writer(excel_file)
-            data_file.writerow(['城市','AQI指数','空气质量级别','日期'])
+            data_file.writerow(['城市','日期','AQI指数','空气质量级别'])
 
-    def date_plus(self):
+    def date_add(self):
         now_date = datetime.datetime.strptime(self.date,'%Y-%m-%d')
         next_date = now_date + datetime.timedelta(days = 1)
         self.date = next_date.strftime('%Y-%m-%d')
@@ -42,14 +42,14 @@ class pm_spider():
         with open(self.city+'-'+self.year+'.csv','a', newline='') as csv_file:
             data_file = csv.writer(csv_file)
             for i in data_list:
-                data_file.writerow([i[0],i[1],i[3],i[2]])
+                data_file.writerow([i[0],i[2],i[1],i[3]])
 
     def start(self):
         print(url)
         for i in range(365):
             print("*" * 50)
             print("正在下载"+self.city+"第" + str(i + 1) + "天PM2.5数据")
-            self.date_plus()
+            self.date_add()
             content = self.get_content(url)
             data = self.get_data(content)
             self.save_data(data)
