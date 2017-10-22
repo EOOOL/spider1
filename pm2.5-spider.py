@@ -5,7 +5,6 @@ import datetime
 
 url = 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action?xmlname=1462259560614'
 
-
 class pm_spider():
     def __init__(self,city,year):
         self.city = city
@@ -53,9 +52,8 @@ class pm_spider():
             self.date_plus()
             content = self.get_content(url)
             data = self.get_data(content)
-            print(data)
             self.save_data(data)
-            print(self.city + self.year + "年" +"第" + str(i + 1) + "天数据下載完成")
+            print(self.city + self.year + "年第" + str(i + 1) + "天数据下載完成")
 
 if __name__=='__main__':
     spider = pm_spider('上海','2016')
