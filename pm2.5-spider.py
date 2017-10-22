@@ -47,7 +47,7 @@ class pm_spider():
     def start(self):
         print(url)
         for i in range(365):
-            print("*" * 50)
+            print("*" * 20)
             print("正在下载"+self.city+"第" + str(i + 1) + "天PM2.5数据")
             self.date_add()
             content = self.get_content(url)
